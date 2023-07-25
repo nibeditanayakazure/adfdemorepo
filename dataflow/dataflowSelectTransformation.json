@@ -19,14 +19,27 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_blob_employee_ind_trgt",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
 				}
 			],
 			"transformations": [
 				{
 					"name": "select1"
+				},
+				{
+					"name": "split1"
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     FileName as string",
+				"}",
 				"source(output(",
 				"          EmpID as string,",
 				"          {First Name} as string,",
@@ -56,7 +69,9 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 sink(allowSchemaDrift: true,",
+				"select1 split({First Name}=='Rajib',",
+				"     disjoint: false) ~> split1@(NameRajib, NameNibedita)",
+				"split1@NameRajib sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
@@ -71,7 +86,11 @@
 				"          YearsOfExperience = {Years Of Experience},",
 				"          Salary,",
 				"          Country",
-				"     )) ~> sink1"
+				"     )) ~> sink1",
+				"split1@NameNibedita sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
 			]
 		}
 	}
