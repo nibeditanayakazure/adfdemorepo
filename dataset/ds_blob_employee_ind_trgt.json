@@ -1,0 +1,25 @@
+{
+	"name": "ds_blob_employee_ind_trgt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_abs_storageaccdemoadf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "employees_in_trgt.csv",
+				"folderPath": "output",
+				"container": "containerdemoadf"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,78 @@
+{
+	"name": "dataflowSelectTransformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_employee_ind_blob",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_blob_employee_ind_trgt",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmpID as string,",
+				"          {First Name} as string,",
+				"          {Last Name} as string,",
+				"          Email as string,",
+				"          Phone as string,",
+				"          Gender as string,",
+				"          {Job Title} as string,",
+				"          {Years Of Experience} as string,",
+				"          Salary as string,",
+				"          Country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 select(mapColumn(",
+				"          EmpID,",
+				"          {First Name},",
+				"          {Last Name},",
+				"          Email,",
+				"          Phone,",
+				"          Gender,",
+				"          {Job Title},",
+				"          {Years Of Experience},",
+				"          Salary,",
+				"          Country",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          EmpID,",
+				"          FirstName = {First Name},",
+				"          LastName = {Last Name},",
+				"          Email,",
+				"          Phone,",
+				"          Gender,",
+				"          JobTitle = {Job Title},",
+				"          YearsOfExperience = {Years Of Experience},",
+				"          Salary,",
+				"          Country",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
